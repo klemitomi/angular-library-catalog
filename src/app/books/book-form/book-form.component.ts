@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-book-form',
   imports: [],
   templateUrl: './book-form.component.html',
-  styleUrl: './book-form.component.scss'
+  styleUrls: ['./book-form.component.scss']
 })
 export class BookFormComponent {
 
