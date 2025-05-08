@@ -5,9 +5,10 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-book-list',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './book-list.component.html',
-  styleUrl: './book-list.component.scss'
+  styleUrls: ['./book-list.component.scss']
 })
 export class BookListComponent {
   books: Book[] = [];
@@ -30,7 +31,9 @@ ngOnInit(): void {
   }
 
   private loadBooks() {
-    this.books = this.bookService.getAll();
+    this.bookService.getAll().subscribe((data) => {
+      this.books = data;
+    });
   }
 
 }
