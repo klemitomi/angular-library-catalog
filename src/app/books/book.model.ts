@@ -1,6 +1,6 @@
 // book model 
 export interface Book {
-    id: number;
+  id: number;
   title: string;
   author: string;
   category: string;
