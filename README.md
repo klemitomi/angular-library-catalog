@@ -26,4 +26,4 @@ $ ng serve
 
 4. Starting the Json server backend:
 
-$ json-server --watch db.json --port 3000
+$ npm run start:backend
