@@ -2,42 +2,46 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router, RouterModule } from '@angular/router';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { BookService } from '../book.service';
 import { Book } from '../book.model';
-import { MatTableDataSource } from '@angular/material/table';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { CustomPaginatorComponent } from '../paginator/paginator.component';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
-  selector: 'app-book-list',
   standalone: true,
   imports: [
     CommonModule,
     MatTableModule,
-    MatPaginatorModule,
     MatButtonModule,
     MatProgressSpinnerModule,
     RouterModule,
-    MatDialogModule
+    MatIconModule,
+    MatTooltipModule,
+    MatInputModule,
+    MatFormFieldModule,
+    CustomPaginatorComponent
   ],
   templateUrl: './book-list.component.html',
+  styleUrls: ['./book-list.component.scss']
 })
 export class BookListComponent implements OnInit {
-  books: MatTableDataSource<Book> = new MatTableDataSource<Book>();
+  books: Book[] = [];
   displayedColumns: string[] = ['title', 'author', 'category', 'year', 'actions'];
   isLoading = true;
+  pageSize = 5;
+  currentPage = 0;
+  filteredData: Book[] = [];
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(CustomPaginatorComponent) paginator!: CustomPaginatorComponent;
 
-  constructor(
-    private bookService: BookService,
-    private dialog: MatDialog,
-    private router: Router
-  ) {}
+  constructor(private bookService: BookService) {}
 
   ngOnInit(): void {
     this.loadBooks();
@@ -46,8 +50,8 @@ export class BookListComponent implements OnInit {
   loadBooks(): void {
     this.bookService.getAll().subscribe({
       next: (data) => {
-        this.books = new MatTableDataSource<Book>(data);
-        this.books.paginator = this.paginator;
+        this.books = data;
+        this.filteredData = [...data];
         this.isLoading = false;
       },
       error: (err) => {
@@ -57,26 +61,32 @@ export class BookListComponent implements OnInit {
     });
   }
 
-  editBook(id: number): void {
-    this.router.navigate(['/books/edit', id]);
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredData = this.books.filter(book => 
+      book.title.toLowerCase().includes(filterValue) || 
+      book.author.toLowerCase().includes(filterValue)
+    );
+    
+    if (this.paginator) {
+      this.paginator.reset();
+    }
+  }
+
+  onPageChange(event: PageEvent) {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+  }
+
+  get paginatedData(): Book[] {
+    const startIndex = this.currentPage * this.pageSize;
+    return this.filteredData.slice(startIndex, startIndex + this.pageSize);
   }
 
   deleteBook(id: number): void {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: 'Törlés megerősítése',
-        message: 'Biztosan törölni szeretnéd ezt a könyvet?',
-        confirmText: 'Törlés'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe((result: boolean) => {
-      if (result) {
-        this.bookService.delete(id).subscribe({
-          next: () => this.loadBooks(),
-          error: (err) => console.error('Hiba történt:', err)
-        });
-      }
+    this.bookService.delete(id).subscribe({
+      next: () => this.loadBooks(),
+      error: (err) => console.error('Hiba történt:', err)
     });
   }
 }
