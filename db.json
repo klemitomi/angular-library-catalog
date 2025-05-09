@@ -4,7 +4,7 @@
       "title": "The Lord of the Ringsed",
       "author": "J.R.R. Tolkiens",
       "category": "Scifi",
-      "year": 1953,
+      "year": 1952,
       "id": "1"
     },
     {
@@ -27,6 +27,13 @@
       "author": "Lajos",
       "category": "Ilyen nincs",
       "year": 2025
+    },
+    {
+      "id": "42c4",
+      "title": "rha",
+      "author": "haewr",
+      "category": "reheazh",
+      "year": 2011
     }
   ]
 }
