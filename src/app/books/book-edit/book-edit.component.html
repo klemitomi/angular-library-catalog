@@ -1,0 +1,30 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Könyv szerkesztése</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="bookForm" (ngSubmit)="onSubmit()">
+      <mat-form-field>
+        <mat-label>Cím</mat-label>
+        <input matInput formControlName="title">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Szerző</mat-label>
+        <input matInput formControlName="author">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Kategória</mat-label>
+        <input matInput formControlName="category">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Év</mat-label>
+        <input matInput type="number" formControlName="year">
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit">Mentés</button>
+    </form>
+  </mat-card-content>
+</mat-card>

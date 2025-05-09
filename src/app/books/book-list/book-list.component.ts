@@ -1,13 +1,16 @@
+// book-list.component.ts
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BookService } from '../book.service';
 import { Book } from '../book.model';
 import { MatTableDataSource } from '@angular/material/table';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-book-list',
@@ -19,8 +22,8 @@ import { MatTableDataSource } from '@angular/material/table';
     MatButtonModule,
     MatProgressSpinnerModule,
     RouterModule,
+    MatDialogModule
   ],
-  providers: [BookService],
   templateUrl: './book-list.component.html',
 })
 export class BookListComponent implements OnInit {
@@ -30,7 +33,11 @@ export class BookListComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private bookService: BookService) {}
+  constructor(
+    private bookService: BookService,
+    private dialog: MatDialog,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadBooks();
@@ -51,13 +58,25 @@ export class BookListComponent implements OnInit {
   }
 
   editBook(id: number): void {
-    // pl. navigálás a szerkesztő formhoz
-    console.log('Edit book with ID:', id);
+    this.router.navigate(['/books/edit', id]);
   }
 
   deleteBook(id: number): void {
-    this.bookService.delete(id).subscribe(() => {
-      this.loadBooks();
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Törlés megerősítése',
+        message: 'Biztosan törölni szeretnéd ezt a könyvet?',
+        confirmText: 'Törlés'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        this.bookService.delete(id).subscribe({
+          next: () => this.loadBooks(),
+          error: (err) => console.error('Hiba történt:', err)
+        });
+      }
     });
   }
 }
