@@ -6,8 +6,9 @@ import { BookFormComponent } from './books/book-form/book-form.component';
 import { BookEditComponent } from './books/book-edit/book-edit.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'books', pathMatch: 'full' },
-    { path: 'books', component: BookListComponent },
-    { path: 'books/add', component: BookFormComponent },
-    { path: 'books/edit/:id', component: BookEditComponent },
-  ];
+  { path: 'books', component: BookListComponent },
+  { path: 'books/add', component: BookFormComponent },
+  { path: 'books/edit/:id', component: BookEditComponent },
+  { path: '', redirectTo: '/books', pathMatch: 'full' },
+  { path: '**', redirectTo: '/books' }
+];
