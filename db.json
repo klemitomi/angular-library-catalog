@@ -8,11 +8,11 @@
       "id": "1"
     },
     {
-      "id": "2",
       "title": "Star Wars",
       "author": "George Lucas",
       "category": "Fantasy",
-      "year": 1977
+      "year": 1977,
+      "id": "2"
     },
     {
       "id": "3",
@@ -20,6 +20,13 @@
       "author": "J.R.R. Tolkien",
       "category": "Fantasy",
       "year": 1937
+    },
+    {
+      "id": "bbc2",
+      "title": "Valami",
+      "author": "Lajos",
+      "category": "Ilyen nincs",
+      "year": 2025
     }
   ]
 }
